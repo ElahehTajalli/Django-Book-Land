@@ -32,8 +32,8 @@ class quoteView (APIView):
       }, status=status.HTTP_400_BAD_REQUEST)
 
 
+  permission_classes = [AllowAny]
   def get(self, request):
-    permission_classes = [AllowAny]
     quotes = Quote.objects.all().order_by('-created_at')
     q = QuoteSerializer(quotes, many=True)
 
