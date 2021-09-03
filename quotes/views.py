@@ -33,6 +33,7 @@ class quoteView (APIView):
 
 
   def get(self, request):
+    permission_classes = [AllowAny]
     quotes = Quote.objects.all().order_by('-created_at')
     q = QuoteSerializer(quotes, many=True)
 
