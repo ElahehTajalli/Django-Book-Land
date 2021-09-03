@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login
 # from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse, QueryDict
+from django.template.loader import get_template
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -54,34 +55,22 @@ class registerView(APIView):
       user = CreateUserSerializer(data= request.POST, context= 'کتابخوان' + ' ' + str(last_user_id['max']))
       if user.is_valid():
         user.save()
-
-        # email = Verification.objects.get(email=user.data['email'])
-        # email.completed = True
-        # email.save()
-        # login(request, u)
-
-        # Set verification code
-        code = randint(10000, 99999)
-        data = {
-          'code': code
+                
+        content = {
+          'email': user.data['email']
         }
-        verification = CreateVerificationSerializer(data=data, context={'user': user.instance})
-        if verification.is_valid():
-          verification.save()
-
-          #send verification code to email
-          email = EmailMessage('Verification Code', str(verification.data['code']), EMAIL_HOST_USER,
+                
+        subject = 'کد فعال سازی حساب'
+        message = get_template('activation_code.html').render(content)
+                
+        email = EmailMessage(subject, message, EMAIL_HOST_USER,
           [str(user.instance.email)])
-          email.send()
-
-          return Response({
-          'message': 'Verification code sent to your email'
+        email.content_subtype = "html"
+        email.send()
+        
+        return Response({
+          'message': 'Verification link sent to your email'
         }, status = status.HTTP_200_OK)
-
-        else:
-          return Response({
-            'errors': verification.errors
-          }, status = status.HTTP_400_BAD_REQUEST)
 
       else:
         return Response({
@@ -329,3 +318,27 @@ class editView(APIView):
       return Response({
         'errors': user.errors
       }, status = status.HTTP_400_BAD_REQUEST)   
+      
+
+class editInfoView(APIView):
+  permission_classes = [AllowAny]
+  def patch (self, request):
+    user = CompleteInfoUserSerializer(User.objects.get(email = request.data['email']),
+      data = request.data, partial=True)
+
+    if user.is_valid():
+      user.save()
+      
+      token, _ = Token.objects.get_or_create(user = user.instance)
+      user.instance.is_active = True
+      
+      user.save()
+      login(request, user.instance)
+
+      return Response({
+        'token': token.key,
+      }, status = status.HTTP_200_OK)
+    else:
+      return Response({
+        'errors': user.errors
+      }, status = status.HTTP_400_BAD_REQUEST)

@@ -24,5 +24,6 @@ urlpatterns = [
     path('books/', include('books.urls')),
     path('posts/', include('posts.urls')),
     path('comments/', include('comments.urls')),
-    path('chats/', include('chats.urls'))
-]+static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+    path('chats/', include('chats.urls')),
+    path('quotes/', include('quotes.urls'))
+] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'books',
     'posts',
     'comments',
-    'chats'
+    'chats',
+    'quotes'
 ]
 
 MIDDLEWARE = [
@@ -66,7 +67,7 @@ ROOT_URLCONF = 'projectBack.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,8 +150,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'ketaablaand@gmail.com'
-EMAIL_HOST_PASSWORD = '123qWe!@#'
+EMAIL_HOST_PASSWORD = 'qhtfiqpvxcyxbabk'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'no reply'
 
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True

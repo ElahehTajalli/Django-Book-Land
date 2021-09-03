@@ -27,8 +27,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = ['email', 'password', 'first_name', 'last_name', 'image']
-    extra_kwargs = {'password': {'write_only': True}}
+    fields = ['email', 'first_name', 'last_name']
 
   def create(self, validated_data):
     user = User(
@@ -37,7 +36,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
       first_name=validated_data['first_name'],
       last_name=validated_data['last_name']
     )
-    user.set_password(validated_data['password'])
     user.is_active = False
     user.save()
     return user
@@ -57,6 +55,20 @@ class EditUserSerializer(serializers.ModelSerializer):
       instance.image = validated_data.get('image', instance.image)
     if 'password' in validated_data:
       instance.set_password(validated_data.get('password', instance.password))
+    instance.save()
+    return instance
+  
+  
+class CompleteInfoUserSerializer(serializers.ModelSerializer):
+  
+  class Meta:
+    model = User
+    fields = ['email', 'persian_username', 'password', 'first_name', 'last_name', 'image']
+    extra_kwargs = {'password': {'write_only': True}}
+
+  def update(self, instance, validated_data):
+    instance.persian_username = validated_data.get('persian_username', instance.persian_username)
+    instance.set_password(validated_data.get('password', instance.password))
     instance.save()
     return instance
 
