@@ -93,10 +93,18 @@ class FoundUser(APIView):
       verification = UpdateVerificationSerializer(verification, data = data, context = data, partial=True)
       if verification.is_valid():
         verification.save()
-
-        #send verification code to email
-        email = EmailMessage('Verification Code', str(verification.data['code']), EMAIL_HOST_USER,
-        [str(user.email)])
+        
+      #send verification code to email
+        content = {
+          'code': code
+        }
+                
+        subject = 'کد فراموشی کلمه‌عبور'
+        message = get_template('forgot_password.html').render(content)
+                
+        email = EmailMessage(subject, message, EMAIL_HOST_USER,
+          [str(user.email)])
+        email.content_subtype = "html"
         email.send()
 
         return Response({
