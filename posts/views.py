@@ -149,7 +149,7 @@ class editPostView (APIView):
 
 class getFollowingPostsView (APIView):
   def get (self, request):
-    following = Relationship.objects.filter(following=request.user).values_list('follower', flat=True)
+    following = Relationship.objects.filter(follower=request.user).values_list('following', flat=True)
     posts = PostSerializer(Post.objects.filter(critic__id__in=following).order_by('-created_at'), many=True)
     return Response({
       'data': {
