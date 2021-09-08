@@ -67,7 +67,7 @@ ROOT_URLCONF = 'projectBack.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['Django-Book-Land/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
